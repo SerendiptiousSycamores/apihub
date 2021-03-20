@@ -5,37 +5,50 @@ const axios = require('axios')
 
 app.use(express.json())
 
-const apiCall = (url, method = 'get', data) => axios({
-  url,
-  method,
-  data,
-});
-
 app.get('/products/productId', (request, response) => {
-  var productId = request.params
-  return Promise.all([
-    apicall(`https://app-hrsei-api.herokuapp.com/api/fec2/hr-sfo/products/${productId}`),
-    apiCall(`https://app-hrsei-api.herokuapp.com/api/fec2/hr-sfo/products/${productId}/styles`),
-  ])
-  .then((res) =>
-    response.send(result)
-  )
-  .catch((err) =>
+  var data = [];
+  // var productId = request.params
+  var productId = 1
+  axios.get('http://localhost:3000/products/productId', {
+    params: {
+      productId: 1
+    }
+  })
+  .then((res) => {
+    data.push(res.data)
+    axios.get('http://localhost:3000/products/productId/styles', {
+      params: {
+        productId: 1
+      }
+    })
+    .then((res) => {
+      data.push(res.data)
+      response.send(data)
+    })
+    .catch((err) =>  {
+      console.log(err)
+      response.sendStatus(404)
+    });
+  })
+  .catch((err) =>  {
+    console.log(err)
     response.sendStatus(404)
-  );
+  });
 });
 
 app.get('/products/relatedId', (request, response) => {
-  var product_id = request.params
-  axios.get('http:localhost:3000/products/productId/related', {
+  // var productId = request.params
+  var productId = 1
+  axios.get('http://localhost:3000/products/productId/related', {
     params: {
-      product_id: `${productId}`,
-    },
+      productId: 1
+    }
   })
   .then((res) => {
     response.send(res.data);
   })
-  .catch(() => {
+  .catch((err) => {
+    console.log(err)
     response.sendStatus(404);
   });
 })
