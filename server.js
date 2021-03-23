@@ -2,56 +2,11 @@ const express = require('express')
 const app = express()
 const port = 3001
 const axios = require('axios')
+const productRoutes = require('./productRoutes.js')
 
 app.use(express.json())
 
-app.get('/products/productId', (request, response) => {
-  var data = [];
-  // var productId = request.params
-  var productId = 1
-  axios.get('http://localhost:3000/products/productId', {
-    params: {
-      productId: 1
-    }
-  })
-  .then((res) => {
-    data.push(res.data)
-    axios.get('http://localhost:3000/products/productId/styles', {
-      params: {
-        productId: 1
-      }
-    })
-    .then((res) => {
-      data.push(res.data)
-      response.send(data)
-    })
-    .catch((err) =>  {
-      console.log(err)
-      response.sendStatus(404)
-    });
-  })
-  .catch((err) =>  {
-    console.log(err)
-    response.sendStatus(404)
-  });
-});
-
-app.get('/products/relatedId', (request, response) => {
-  // var productId = request.params
-  var productId = 1
-  axios.get('http://localhost:3000/products/productId/related', {
-    params: {
-      productId: 1
-    }
-  })
-  .then((res) => {
-    response.send(res.data);
-  })
-  .catch((err) => {
-    console.log(err)
-    response.sendStatus(404);
-  });
-})
+app.use('/products', productRoutes)
 
 app.get('/questions', (request, response) => {
   axios.get('http:localhost:3000/qa/questions', {
